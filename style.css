@@ -14,9 +14,14 @@ body{
 }
 
 .display{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
     margin: 0 auto;
     height: 30vh;
     background-color: #000;
+    color: white;
+    font-size: 5rem;
 }
 
 .keypad{
