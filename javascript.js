@@ -23,7 +23,7 @@ const operator = function(arithmetic){
 }
 
 const plus_minus = function(arithmetic){
-  if (figure) figures.push(figure)
+  if (figure) figures.push(remove_extra_decimal(figure))
 
   figure = arithmetic
   display.textContent=figure
@@ -39,7 +39,7 @@ const multiply_divide = function(arithmetic){
     return;
   }
   else{
-    figures.push(figure)
+    figures.push(remove_extra_decimal(figure))
   }
 
   figure = arithmetic
@@ -47,7 +47,7 @@ const multiply_divide = function(arithmetic){
 }
 
 const isNumber =function(str){
-  return ((/[1-9]/i).test(str))
+  return ((/[1-9]\./i).test(str))
 }
 
 const prevIsMultiplyDivide = function(){
@@ -84,8 +84,9 @@ const clear_all = function(){
 }
 
 const operate = function(){
-  if (prevIsNumber()){
+  if (isNumber(figure)){
     figures.push(figure)
+    figure=''
   }
   else{
     alert("Cannot end with operator!")
@@ -98,15 +99,17 @@ const operate = function(){
 
   arithmetic_presedence()
 
-  let all=figures.reduce(function(total,nextOne){
+  figure=figures.reduce(function(total,nextOne){
     total = total+nextOne
     return total;      
   })
 
-  display.textContent=total;
+  figures=[]
+
+  display.textContent=figure;
 }
 
-const combine_plus_minus = function(figures){
+const combine_plus_minus = function(){
   for (let index = 0; index < figures.length; index++) {
     if (figures[index]=="+"||figures[index]=="-"){
       let minus_count =0;
@@ -144,26 +147,10 @@ const arithmetic_presedence = function(){
   }
 }
 
-const addition = function(a,b) {
-	return a+b;
-};
-
-const subtraction = function(a,b) {
-	return a-b;
-};
-
-const multiplication = function(a,b) {
-  return a*b
-};
-
-const division = function(a,b){
-  return a/b
+const remove_extra_decimal = function(str){
+  let index =str.lastIndexOf('.')
+  return str.slice(0,index).split('.').join('').concat(str.slice(index))
 }
-
-const power = function(a,b) {
-	return a**b;
-};
-
 
 keypad.addEventListener("click", function(e){
     const button = e.target.dataset.key;
