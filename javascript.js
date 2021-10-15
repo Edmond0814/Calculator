@@ -2,57 +2,86 @@ const content = document.querySelector(".content")
 const keypad = document.querySelector(".keypad")
 const display = document.querySelector("#display")
 
-
-let prevIsNumber = true
-let prevIsMultiplyDivide =false
+let alerted = false
 let figures = []
-let figures_precedence = []
 let figure = ''
 
 const operand = function(number){
-  figure += number
+  if (prevIsNumber()){
+    figure +=number
+  }
+  else {
+    if(figure) figures.push(figure)
+    figure=number
+  }
   display.textContent = figure;
-  prevIsNumber=true
 }
 
 const operator = function(arithmetic){
-  
-  if(arithmetic=='multiply'||arithmetic=='divide'){
-    if (prevIsMultiplyDivide!=true){
-      if (figure.length!=0){
-        figures_precedence.push(figure)
-        figure=''
-      }
-      prevIsMultiplyDivide=true
-    }
-    else {
-      let alerted = sessionStorage.getItem('alerted')||'';
-      if (alerted!='yes'){
-        alert("If you enter multiply and divide together,\
-         the latter operator will take place")
-        sessionStorage.setItem('alerted','yes')
-      } 
-    }
-  }  
-  prevIsNumber=false
+  (arithmetic=='x'||arithmetic=='/')?
+  multiply_divide(arithmetic):plus_minus(arithmetic);
+}
+
+const plus_minus = function(arithmetic){
+  console.log("testing");
+}
+
+const multiply_divide = function(arithmetic){
+  if (prevIsMultiplyDivide()){
+    alert_msg();
+    figures.pop     
+  }
+  else if (!prevIsNumber()){
+    alert("No value to multiply or divide!")
+    return;
+  }
+  else{
+    figures.push(figure)
+  }
+
+  figure = arithmetic
+  display.textContent=figure
 }
 
 const actions = function(action){
-  if (action == 'delete'){
-    if(prevIsNumber){
-      figure = figure.slice(0,-1)
-    }
-    else {
-      display.textContent=figures[-1]
-    }
-    display.textContent=figure
+  (action == 'delete')? del():clear_all()
+}
+
+const del = function(){
+  if(figure&&figure.length>1){
+    figure = figure.slice(0,-1)
   }
-  else{
-    figure=''
+  else {
+    (figures.slice(-1))? figure = figures.pop():figure=''
+  }
+  display.textContent=figure
+}
+
+
+const alert_msg = function(){
+  if (!alerted){
+    alert("If you enter multiply and divide together,\
+the latter operator will take place")
+    alerted = true
+  } 
+}
+
+const clear_all = function(){
+  figure=''
     figures=[]
-    figures_precedence=[]
     display.textContent=''
-  }
+}
+
+const prevIsNumber =function(){
+  return ((/[1-9]/i).test(figure))
+}
+
+const prevIsMultiplyDivide = function(){
+  return (figure=="x"||figure=="/")
+}
+
+const isEmpty = function(){
+  return ((!figures.length&&!figure))
 }
 
 const addition = function(a,b) {
