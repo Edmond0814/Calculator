@@ -7,7 +7,7 @@ let figures = []
 let figure = ''
 
 const operand = function(number){
-  if (prevIsNumber()){
+  if (isNumber(figure)){
     figure +=number
   }
   else {
@@ -34,7 +34,7 @@ const multiply_divide = function(arithmetic){
     alert_msg();
     figures.pop     
   }
-  else if (!prevIsNumber()){
+  else if (!isNumber(figure)){
     alert("No value to multiply or divide!")
     return;
   }
@@ -46,8 +46,8 @@ const multiply_divide = function(arithmetic){
   display.textContent=figure
 }
 
-const prevIsNumber =function(){
-  return ((/[1-9]/i).test(figure))
+const isNumber =function(str){
+  return ((/[1-9]/i).test(str))
 }
 
 const prevIsMultiplyDivide = function(){
@@ -92,7 +92,56 @@ const operate = function(){
     return;
   }
 
-  figures.indexOf
+  combine_plus_minus()
+
+  strings_to_numbers()
+
+  arithmetic_presedence()
+
+  let all=figures.reduce(function(total,nextOne){
+    total = total+nextOne
+    return total;      
+  })
+
+  display.textContent=total;
+}
+
+const combine_plus_minus = function(figures){
+  for (let index = 0; index < figures.length; index++) {
+    if (figures[index]=="+"||figures[index]=="-"){
+      let minus_count =0;
+      let end_point = index
+      while (!isNumber(figures[end_point])){
+        if (figures[end_point]=='-') minus_count++
+        end_point++
+      }
+      let combined = minus_count%2? "-":"+" 
+      figures.splice(index,end_point-index,combined)
+    }
+  }
+}
+
+const strings_to_numbers = function(){
+  for (let index = 0; index < figures.length; index++) {
+    if (figures[index]=="+"||figures[index]=="-"){
+      let combined = (figures[index]=="+")? 
+      Number(figures[index+1]):-Number(figures[index+1])
+      figures.splice(index,2,combined)
+    }
+    else if (isNumber(figures[index])){
+      figures.splice(index,1,Number(figures[index]))
+    }
+  }
+}
+
+const arithmetic_presedence = function(){
+  for (let index = 0; index < figures.length; index++) {
+    if (figures[index]=="x"||figures[index]=="/"){
+      let result = (figures[index]=="x")?
+      figures[index-1]*figures[index+1]:figures[index-1]/figures[index+1]
+      figures.splice(index-1,3,result)
+    }
+  }
 }
 
 const addition = function(a,b) {
