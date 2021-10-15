@@ -23,7 +23,10 @@ const operator = function(arithmetic){
 }
 
 const plus_minus = function(arithmetic){
-  console.log("testing");
+  if (figure) figures.push(figure)
+
+  figure = arithmetic
+  display.textContent=figure
 }
 
 const multiply_divide = function(arithmetic){
@@ -41,6 +44,14 @@ const multiply_divide = function(arithmetic){
 
   figure = arithmetic
   display.textContent=figure
+}
+
+const prevIsNumber =function(){
+  return ((/[1-9]/i).test(figure))
+}
+
+const prevIsMultiplyDivide = function(){
+  return (figure=="x"||figure=="/")
 }
 
 const actions = function(action){
@@ -68,20 +79,20 @@ the latter operator will take place")
 
 const clear_all = function(){
   figure=''
-    figures=[]
-    display.textContent=''
+  figures=[]
+  display.textContent=''
 }
 
-const prevIsNumber =function(){
-  return ((/[1-9]/i).test(figure))
-}
+const operate = function(){
+  if (prevIsNumber()){
+    figures.push(figure)
+  }
+  else{
+    alert("Cannot end with operator!")
+    return;
+  }
 
-const prevIsMultiplyDivide = function(){
-  return (figure=="x"||figure=="/")
-}
-
-const isEmpty = function(){
-  return ((!figures.length&&!figure))
+  figures.indexOf
 }
 
 const addition = function(a,b) {
