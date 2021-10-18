@@ -24,7 +24,11 @@ body{
 }
 
 #display{
+    text-align: right;
     margin-right:1rem;
+    width: 28.75rem;
+    overflow: hidden;
+    text-overflow: clip;
 }
 
 .keypad{

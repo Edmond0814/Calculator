@@ -7,6 +7,9 @@ let figures = []
 let figure = ''
 
 const operand = function(number){
+  if (figures.length==1&&!figure)
+    clear_all();
+
   if (isNumber(figure)){
     figure +=number
   }
@@ -34,11 +37,11 @@ const multiply_divide = function(arithmetic){
     alert_msg();
     figures.pop     
   }
-  else if (!isNumber(figure)){
+  else if (!isNumber(figure)&&!(figures.length==1&&!figure)){
     alert("No value to multiply or divide!")
     return;
   }
-  else{
+  else if (figure){
     figures.push(remove_extra_decimal(figure))
   }
 
@@ -47,7 +50,7 @@ const multiply_divide = function(arithmetic){
 }
 
 const isNumber =function(str){
-  return ((/[1-9]\./i).test(str))
+  return ((/[1-9.]/i).test(str))
 }
 
 const prevIsMultiplyDivide = function(){
@@ -61,6 +64,9 @@ const actions = function(action){
 const del = function(){
   if(figure&&figure.length>1){
     figure = figure.slice(0,-1)
+  }
+  else if(figures.length==1&&!figure){
+    clear_all()
   }
   else {
     (figures.slice(-1))? figure = figures.pop():figure=''
@@ -99,29 +105,32 @@ const operate = function(){
 
   arithmetic_presedence()
 
-  figure=figures.reduce(function(total,nextOne){
+  let sum=figures.reduce(function(total,nextOne){
     total = total+nextOne
     return total;      
   })
 
+  sum = Number(sum.toFixed(6).toString())
   figures=[]
+  figures.push(sum)
 
-  display.textContent=figure;
+  display.textContent=figures[0];
 }
 
 const combine_plus_minus = function(){
-  for (let index = 0; index < figures.length; index++) {
-    if (figures[index]=="+"||figures[index]=="-"){
-      let minus_count =0;
-      let end_point = index
-      while (!isNumber(figures[end_point])){
-        if (figures[end_point]=='-') minus_count++
-        end_point++
-      }
-      let combined = minus_count%2? "-":"+" 
-      figures.splice(index,end_point-index,combined)
-    }
-  }
+  figures=figures.reduce(function(previousOne,currentOne,index,arr){
+    if (currentOne=='+'||currentOne=='-'){
+       let minus_count=0;
+       let end_point=index;
+       while(!isNumber(arr[end_point])){
+         if (arr[end_point]=='-') minus_count++
+         end_point++;
+       }
+       let combined = minus_count%2? "-":"+" 
+       arr.splice(index,end_point-index,combined)
+   }
+   return arr;
+ },[]) 
 }
 
 const strings_to_numbers = function(){
@@ -162,7 +171,24 @@ keypad.addEventListener("click", function(e){
                             break;
       case "button operator": operator(button);
                               break;
-      case "button operate": operate(button);
+      case "button operate": operate();
                               break;
     }
+})
+
+document.addEventListener('keydown',function(event){
+  console.log(event);
+  let operators = ['+','-','x','/']
+  let action = ['Backspace','Delete']
+  if (isNumber(event.key)){
+    operand(event.key)
+  }
+  else if(operators.indexOf(event.key)!=-1){
+    operator(event.key)
+  }
+  else if (action.indexOf(event.key)!=-1){
+    actions('delete')
+  }
+  else if (event.key=='='||event.key=='Enter')
+    operate()
 })
