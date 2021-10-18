@@ -91,7 +91,7 @@ const clear_all = function(){
 
 const operate = function(){
   if (isNumber(figure)){
-    figures.push(figure)
+    figures.push(remove_extra_decimal(figure))
     figure=''
   }
   else{
